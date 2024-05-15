@@ -9,16 +9,12 @@ class Bot:
         self.history = [("system", system)] if system else []
         print("Bot created")
 
-    def addToHistory(self, role, message):
+    def add_to_history(self, role, message):
         self.history.append((role, message))
         print(f"Added to history: ({role}: {message})")
 
-    def removeFromHistory(self, index):
-        self.history.pop(index)
-        print(f"Removed from history index {index}")
-
-    def clearHistory(self):
-        self.history = []
+    def clear_history(self):
+        self.history = [self.history[0]] if "system" in self.history[0] else []
         print("History cleared")
 
     def prompt(self, prompt):
@@ -41,7 +37,7 @@ if __name__ == "__main__":
     # Test the Bot class
 
     bot = Bot("phi3", "You are a clown.")
-    bot.addToHistory("user", "You like bananas.")
-    bot.addToHistory("assistant", "Ok! I will mention bananas in the next response.")
+    bot.add_to_history("user", "You like bananas.")
+    bot.add_to_history("assistant", "Ok! I will mention bananas in the next response.")
     response = bot.prompt("Hello! Create one-sentence story.")
     print(response)
