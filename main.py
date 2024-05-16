@@ -15,10 +15,22 @@ def extract_text(pdfPath, maxPages=2):
     return text.replace("\n", " ")
 
 
+def match(text, categories):
+    categories = [category.lower() for category in categories]
+    matches = [category for category in categories if category in text]
+    if len(matches) == 1:
+        return matches[0]
+    else:
+        return False
+
+
 def organize_pdfs(mainDir=os.getcwd()):
-    categories = {}
+
     
-    # Step 1: Read through each category, extract text, and update JSON. Store all categories in an array.
+    # Step 1: Read through each category, extract text, and update JSON.
+
+    categories = {}
+
     for categoryDir in os.listdir(mainDir):
         if os.path.isdir(os.path.join(mainDir, categoryDir)):
             jsonPath = os.path.join(mainDir, categoryDir, 'data.json')
@@ -40,7 +52,9 @@ def organize_pdfs(mainDir=os.getcwd()):
     
     print("Categories: ", categories)
 
-    # Train the bot
+
+    # Step 2: "Train" the bot using provided examples
+
     bot = Bot("phi3", "Be concise, provide the correct tag, and stop when done.")
 
     for categoryDir in categories.values():
@@ -51,27 +65,34 @@ def organize_pdfs(mainDir=os.getcwd()):
                 exampleText = data["example"]
                 exampleCategory = data["category"]
                 if exampleText and exampleCategory:
-                    bot.add_to_history("user", exampleText)
+                    bot.add_to_history("user", f"TASK -> Classify this content:\nCONTENT -> {exampleText}\nSelect the correct category\nCATEGORIES -> {', '.join(categories.keys())}\nOnly respond with one category, then STOP.")
                     bot.add_to_history("assistant", exampleCategory)
-
-    response = bot.prompt("Hello! Create one-sentence story.")
-    print(response)
     
-    # Step 2: Match files in input directory to categories
-    # inputDir = os.path.join(mainDir, "input")
-    # for fileName in os.listdir(inputDir):
-    #     filePath = os.path.join(inputDir, fileName)
-    #     if os.path.isfile(filePath) and fileName.endswith('.pdf'):
-    #         text = extract_text(filePath)
-    #         introduce = f"TASK -> Classify this content:\nCONTENT -> {text}\nSelect the correct category\nCATEGORIES -> {', '.join(categories.keys())}\nOnly respond with categories, then STOP."
-    #         bestCategory = bot.prompt(introduce)
-    #         print(f"Matched file '{fileName}' to category '{bestCategory}'")
-            # bestCategory = match(text, categories)
-            # categoryDir = categories[bestCategory]
-            # if not os.path.exists(categoryDir):
-            #     os.makedirs(categoryDir)
-            # shutil.move(filePath, os.path.join(categoryDir, fileName))
-            # print(f"Moved {fileName} to {bestCategory}")
+
+    # Step 3: Match files in input directory to categories
+
+    inputDir = os.path.join(mainDir, "input")
+    otherDir = os.path.join(mainDir, "other")
+    if not os.path.exists(otherDir):
+        os.mkdir(otherDir)
+        
+    for fileName in os.listdir(inputDir):
+        filePath = os.path.join(inputDir, fileName)
+        if os.path.isfile(filePath) and fileName.endswith('.pdf'):
+            text = extract_text(filePath)
+            prompt = f"TASK -> Classify this content:\nCONTENT -> {text}\nSelect the correct category\nCATEGORIES -> {', '.join(categories.keys())}\nOnly respond with one category, then STOP."
+            response = bot.prompt(prompt)
+            bestCategory = match(response, categories)
+            print(f"Matched file '{fileName}' to category '{bestCategory}'")
+            # if bestCategory:
+            #     categoryDir = categories[bestCategory]
+            #     if not os.path.exists(categoryDir):
+            #         os.makedirs(categoryDir)
+            #     shutil.move(filePath, os.path.join(categoryDir, fileName))
+            #     print(f"Moved {fileName}")
+            # else:
+            #     shutil.move(filePath, os.path.join(otherDir, fileName))
+            #     print(f"Moved {fileName} to 'other'")
 
 if __name__ == "__main__":
     organize_pdfs()
