@@ -18,6 +18,8 @@ class Bot:
         print("History cleared")
 
     def prompt(self, prompt):
+        print("Prompting...")
+
         output_parser = StrOutputParser()
 
         messages = self.history.copy()
@@ -27,7 +29,7 @@ class Bot:
         chain = template | self.llm | output_parser
         output = chain.invoke({"input": prompt.replace("{", "[").replace("}", "]")})
 
-        print(f"Prompted and got response")
+        print(f"Got response")
 
         return output.strip()
 
