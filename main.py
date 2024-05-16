@@ -16,8 +16,7 @@ def extract_text(pdfPath, maxPages=2):
 
 
 def match(text, categories):
-    categories = [category.lower() for category in categories]
-    matches = [category for category in categories if category in text]
+    matches = [category for category in categories if category.lower() in text.lower()]
     if len(matches) == 1:
         return matches[0]
     else:
