@@ -81,17 +81,17 @@ def organize_pdfs(mainDir=os.getcwd()):
             text = extract_text(filePath)
             prompt = f"TASK -> Classify this content:\nCONTENT -> {text}\nSelect the correct category\nCATEGORIES -> {', '.join(categories.keys())}\nOnly respond with one category, then STOP."
             response = bot.prompt(prompt)
-            bestCategory = match(response, categories)
+            bestCategory = match(response.split("\n")[0], categories)
             print(f"Matched file '{fileName}' to category '{bestCategory}', where the answer was:\n{response}")
-            # if bestCategory:
-            #     categoryDir = categories[bestCategory]
-            #     if not os.path.exists(categoryDir):
-            #         os.makedirs(categoryDir)
-            #     shutil.move(filePath, os.path.join(categoryDir, fileName))
-            #     print(f"Moved {fileName}")
-            # else:
-            #     shutil.move(filePath, os.path.join(otherDir, fileName))
-            #     print(f"Moved {fileName} to 'other'")
+            if bestCategory:
+                categoryDir = categories[bestCategory]
+                if not os.path.exists(categoryDir):
+                    os.makedirs(categoryDir)
+                shutil.move(filePath, os.path.join(categoryDir, fileName))
+                print(f"Moved {fileName}")
+            else:
+                shutil.move(filePath, os.path.join(otherDir, fileName))
+                print(f"Moved {fileName} to 'other'")
 
 if __name__ == "__main__":
     organize_pdfs()
