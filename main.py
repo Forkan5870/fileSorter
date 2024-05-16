@@ -28,38 +28,35 @@ def organize_pdfs(mainDir=os.getcwd()):
                     pdfPath = os.path.join(mainDir, categoryDir, fileName)
                     break  # Stop searching once a PDF is found
             if os.path.exists(jsonPath) and pdfPath and len(os.listdir(os.path.join(mainDir, categoryDir))) == 2:
-                with open(jsonPath, 'r') as json_file:
-                    data = json.load(json_file)
+                with open(jsonPath, 'r') as jsonFile:
+                    data = json.load(jsonFile)
                     category = data["category"]  # Get the value associated with the key "category"
                     if category:
                         categories[category] = categoryDir
                 text = extract_text(pdfPath)
                 data["example"] = text
-                with open(jsonPath, 'w') as json_file:
-                    json.dump(data, json_file, indent=4)
+                with open(jsonPath, 'w') as jsonFile:
+                    json.dump(data, jsonFile, indent=4)
     
     print("Categories: ", categories)
 
     # Train the bot
     bot = Bot("phi3", "Be concise, provide the correct tag, and stop when done.")
 
-
-    response = bot.prompt("Please classify the following content: 'The quick brown fox jumps over the lazy dog.'")
-    print(response)
-
     for categoryDir in categories.values():
         jsonPath = os.path.join(categoryDir, 'data.json')
         if os.path.exists(jsonPath):
-            with open(jsonPath, 'r') as json_file:
-                data = json.load(json_file)
+            with open(jsonPath, 'r') as jsonFile:
+                data = json.load(jsonFile)
                 exampleText = data["example"]
                 exampleCategory = data["category"]
-                if text:
-                    # Add interaction to bot's history
-                    bot.add_to_history("user", f"TASK -> Classify this content:\nCONTENT -> {exampleText}\nSelect the correct category\nCATEGORIES -> {', '.join(categories.keys())}\nOnly respond with categories, then STOP.")
+                if exampleText and exampleCategory:
+                    bot.add_to_history("user", exampleText)
                     bot.add_to_history("assistant", exampleCategory)
 
-
+    response = bot.prompt("Hello! Create one-sentence story.")
+    print(response)
+    
     # Step 2: Match files in input directory to categories
     # inputDir = os.path.join(mainDir, "input")
     # for fileName in os.listdir(inputDir):
