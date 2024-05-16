@@ -25,7 +25,7 @@ class Bot:
         template = ChatPromptTemplate.from_messages(messages)
 
         chain = template | self.llm | output_parser
-        output = chain.invoke({"input": prompt })
+        output = chain.invoke({"input": prompt.replace("{", "[").replace("}", "]")})
 
         print(f"Prompted and got response")
 
