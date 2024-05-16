@@ -10,7 +10,7 @@ class Bot:
         print("Bot created")
 
     def add_to_history(self, role, message):
-        self.history.append((role, message))
+        self.history.append((role, message.replace("{", "[").replace("}", "]")))
         print(f"Added to history for role {role}")
 
     def clear_history(self):
