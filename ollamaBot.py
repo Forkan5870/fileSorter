@@ -11,7 +11,7 @@ class Bot:
 
     def add_to_history(self, role, message):
         self.history.append((role, message))
-        print(f"Added to history: ({role}: {message})")
+        print(f"Added to history for role {role}")
 
     def clear_history(self):
         self.history = [self.history[0]] if "system" in self.history[0] else []
