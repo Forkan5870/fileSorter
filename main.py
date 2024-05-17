@@ -5,6 +5,7 @@ import json
 import shutil
 import PyPDF2
 
+
 def extract_text(pdfPath, maxPages=2):
     text = ""
     with open(pdfPath, "rb") as file:
@@ -23,7 +24,7 @@ def match(text, categories):
         return False
 
 
-def organize_pdfs(mainDir=os.getcwd()):
+def organize_pdfs(mainDir=os.getcwd(), model="phi3"):
 
     
     # Step 1: Read through each category, extract text, and update JSON.
@@ -37,11 +38,11 @@ def organize_pdfs(mainDir=os.getcwd()):
             for fileName in os.listdir(os.path.join(mainDir, categoryDir)):
                 if fileName.endswith('.pdf'):
                     pdfPath = os.path.join(mainDir, categoryDir, fileName)
-                    break  # Stop searching once a PDF is found
+                    break
             if os.path.exists(jsonPath) and pdfPath and len(os.listdir(os.path.join(mainDir, categoryDir))) == 2:
                 with open(jsonPath, 'r') as jsonFile:
                     data = json.load(jsonFile)
-                    category = data["category"]  # Get the value associated with the key "category"
+                    category = data["category"]
                     if category:
                         categories[category] = categoryDir
                 text = extract_text(pdfPath)
@@ -54,7 +55,7 @@ def organize_pdfs(mainDir=os.getcwd()):
 
     # Step 2: "Train" the bot using provided examples
 
-    bot = Bot("phi3", "Be concise, provide the correct tag, and stop when done.")
+    bot = Bot(model, "Be concise, provide the correct tag, and stop when done.")
 
     for categoryDir in categories.values():
         jsonPath = os.path.join(categoryDir, 'data.json')
@@ -92,6 +93,7 @@ def organize_pdfs(mainDir=os.getcwd()):
             else:
                 shutil.move(filePath, os.path.join(otherDir, fileName))
                 print(f"Moved {fileName} to 'other'")
+
 
 if __name__ == "__main__":
     organize_pdfs()
