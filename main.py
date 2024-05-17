@@ -89,10 +89,10 @@ def organize_pdfs(mainDir=os.getcwd(), model="phi3"):
                 if not os.path.exists(categoryDir):
                     os.makedirs(categoryDir)
                 shutil.move(filePath, os.path.join(categoryDir, fileName))
-                print(f"Moved {fileName}")
+                print(f"Moved '{fileName}' to '{bestCategory}'")
             else:
                 shutil.move(filePath, os.path.join(otherDir, fileName))
-                print(f"Moved {fileName} to 'other'")
+                print(f"Moved '{fileName}' to 'other'")
 
 
 if __name__ == "__main__":

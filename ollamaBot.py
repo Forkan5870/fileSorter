@@ -11,14 +11,14 @@ class Bot:
 
     def add_to_history(self, role, message):
         self.history.append((role, message.replace("{", "[").replace("}", "]")))
-        print(f"Added to history for role {role}")
+        print(f"Added role '{role}' with message to history")
 
     def clear_history(self):
         self.history = [self.history[0]] if "system" in self.history[0] else []
         print("History cleared")
 
     def prompt(self, prompt):
-        print("Prompting...")
+        print("Prompting...", end=" ")
 
         output_parser = StrOutputParser()
 
