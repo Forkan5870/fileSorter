@@ -5,7 +5,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 # This function is a simplified version of the Bot class from ollamaBot.py
 
-def promptLLM(prompt, model="llama2", system=False):
+def prompt(prompt, model="phi3", system=False):
 
     output_parser = StrOutputParser()
 
@@ -31,4 +31,4 @@ def promptLLM(prompt, model="llama2", system=False):
     print(output.strip())
 
 
-promptLLM("Hello! Create a one-sentence story.")
+prompt("Hello! Create a one-sentence story.")
