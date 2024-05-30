@@ -18,7 +18,7 @@ class Bot:
         print("History cleared")
 
     def prompt(self, prompt):
-        print("Prompting...", end=" ")
+        print("Prompting...", end=" ", flush=True)
 
         output_parser = StrOutputParser()
 
