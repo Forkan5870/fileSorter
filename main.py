@@ -18,11 +18,14 @@ def extract_text(pdfPath, maxPages=2):
 
 
 def match(text, categories):
+    matches = [category for category in categories if category.lower() in text.split("\n")[0].lower()]
+    if len(matches) == 1:
+        return matches[0]
     matches = [category for category in categories if category.lower() in text.lower()]
     if len(matches) == 1:
         return matches[0]
     else:
-        return False
+        return None
 
 
 def organize_pdfs(inputDir=os.path.join(os.getcwd(), "input"), outputDir=os.path.join(os.getcwd(), "output"), trainDir=os.path.join(os.getcwd(), "train"), trainedFile=None, model="phi3"):
@@ -118,7 +121,7 @@ def organize_pdfs(inputDir=os.path.join(os.getcwd(), "input"), outputDir=os.path
             text = extract_text(filePath)
             prompt = f"TASK -> Classify this content:\nCONTENT -> {text}\nSelect the correct category\nCATEGORIES -> {', '.join(categories.keys())}\nOnly respond with one category, then STOP."
             response = bot.prompt(prompt)
-            bestCategory = match(response.split("\n")[0], categories)
+            bestCategory = match(response, categories)
             print(f"Matched file '{fileName}' to category '{bestCategory}', where the answer was:\n{response}")
             if bestCategory:
                 categoryDir = os.path.join(outputDir, bestCategory)
