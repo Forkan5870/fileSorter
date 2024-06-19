@@ -1,7 +1,7 @@
 # fileSorter
 
 
-This Python script sorts PDF files in a directory into folders based on the content of their first two pages. It utilizes the PyPDF2 library to extract text from the PDF files and the Ollama library to analyze the text and classify it into categories. The categories are defined by the user in a `data.json` file within each category folder. The script uses the `phi3` model by default, but it can be easily switched to other models available in the [Ollama library](https://ollama.com/library). All models run locally on the user's machine, ensuring that no data is sent to the cloud or shared with third parties.
+This Python script sorts PDF files in a directory into folders based on the content of their first two pages. It utilizes the PyPDF2 library to extract text from the PDF files and the LangChain's Ollama library to analyze the text and classify it into categories. The categories are defined by the user in a `data.json` file within each category folder. The script uses the `phi3` model by default, but it can be easily switched to other models available in the [LangChain's Ollama library](https://ollama.com/library). All models run locally on the user's machine, ensuring that no data is sent to the cloud or shared with third parties.
 
 ## Usage
 
